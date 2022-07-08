@@ -1,5 +1,7 @@
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader'
 import Stats from 'three/examples/jsm/libs/stats.module'
 import gsap from 'gsap'
 
@@ -16,6 +18,8 @@ class ThreeModel {
         this.initScene()
         this.initCamera()
         this.initRenderer()
+        // this.loadFBXModel()
+        // this.loadGLTFModel()
         this.initMesh()
         this.initLight()
         this.initControls()
@@ -46,6 +50,22 @@ class ThreeModel {
         document.getElementById('THREEVIEW').appendChild(this.renderer.domElement)
     }
 
+    loadFBXModel() {
+        const loader = new FBXLoader()
+        loader.load('./models/Samba Dancing.fbx', (object) => {
+            console.log(object);
+            this.scene.add(object)
+        })
+    }
+
+    loadGLTFModel() {
+        const loader = new GLTFLoader()
+        loader.load('./models/scene.gltf', (object) => {
+            console.log(object);
+            this.scene.add(object.scene)
+        })
+    }
+
     initMesh() {
         // for(let i = 0; i < 20; i ++) {
         //     const geometry = new THREE.BufferGeometry()
@@ -59,7 +79,7 @@ class ThreeModel {
         //     this.scene.add(mesh)
         // }
         //贴图
-        // const textureLoader = new THREE.TextureLoader()
+        const textureLoader = new THREE.TextureLoader()
         // const picTexture = textureLoader.load('./texture/door_left.png')
         // const alphaTexture = textureLoader.load('./texture/glass.png')
         // const geometry = new THREE.BoxBufferGeometry(2, 3.6, 2)
@@ -99,12 +119,33 @@ class ThreeModel {
             roughness: 0,
             envMap: env
         })
-
-        const mesh = new THREE.Mesh(geometry, metarial)
-        
-        this.scene.add(mesh)
+        const geometry2 = new THREE.SphereBufferGeometry(1, 10, 10)
+        const metarial2 = new THREE.MeshStandardMaterial({
+            metalness: 1,
+            roughness: 0,
+            envMap: env
+        })
+        for(let i = 0; i< Math.random() * 30; i ++) {
+            let yz = Math.floor(Math.random() * 10) + 30
+            const geometry = new THREE.SphereBufferGeometry(1, yz, yz)
+            const metarial = new THREE.MeshStandardMaterial({
+                metalness: 1,
+                roughness: 0,
+                envMap: env
+            })
+            const mesh = new THREE.Mesh(geometry, metarial)
+            mesh.position.set(Math.random() * 10 - 5, Math.random() * 10 - 5, Math.random() * 10 - 5)
+            this.scene.add(mesh)
+        }
+        // const mesh = new THREE.Mesh(geometry, metarial)
+        // const mesh2 = new THREE.Mesh(geometry2, metarial2)
+        // mesh2.position.set(2, 2, -1)
+        // this.scene.add(mesh)
+        // this.scene.add(mesh2)
         this.scene.background = env
         this.scene.environment = env
+
+
     }
     
     initLight() {
@@ -135,7 +176,7 @@ class ThreeModel {
 			this.camera.aspect = window.innerWidth / window.innerHeight
 			this.camera.updateProjectionMatrix()
 			this.renderer.setSize(window.innerWidth, window.innerHeight)
-            // this.renderer.setPixelRatio(window.devicePixelRatio)
+            this.renderer.setPixelRatio(window.devicePixelRatio)
 		})
     }
 

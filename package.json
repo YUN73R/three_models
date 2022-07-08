@@ -2,10 +2,10 @@
   "name": "three_models",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "main.js",
   "scripts": {
     "dev": "parcel src/index.html",
-    "build": "parcel build src/index.html"
+    "build": "parcel build src/main.js"
   },
   "keywords": [],
   "author": "",

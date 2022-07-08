@@ -1,0 +1,1 @@
+{"mappings":"AAAA;;;;;AAIA","sources":["src/assets/css/basic.css"],"sourcesContent":["* {\r\n    padding: 0;\r\n    margin: 0;\r\n}\r\nbody {\r\n    background: url(../../imgs/three_bg.png) center;\r\n    background-size: cover;\r\n}"],"names":[],"version":3,"file":"index.6a752ba5.css.map","sourceRoot":"/__parcel_source_root/"}

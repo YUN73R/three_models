@@ -17,6 +17,7 @@ class ThreeModel {
         this.initCamera()
         this.initRenderer()
         this.initMesh()
+        this.initLight()
         this.initControls()
 
         this.initStats()
@@ -34,6 +35,7 @@ class ThreeModel {
         this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000)
         this.camera.position.set(0, 0, 10)
         this.scene.add(this.camera)
+
         //镜头动画
         // gsap.to(this.camera.position, { x: 5, duration: 5, repeat: -1, yoyo: true })
     }
@@ -45,22 +47,82 @@ class ThreeModel {
     }
 
     initMesh() {
-        for(let i = 0; i < 20; i ++) {
-            const geometry = new THREE.BufferGeometry()
-            let positionArray = new Float32Array(9)
-            for(let n = 0; n < 9; n ++) {
-                positionArray[n] = Math.random() * 10 - 5
-            }
-            geometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3))
-            const metarial = new THREE.MeshBasicMaterial({ color: new THREE.Color(Math.random(), Math.random(), Math.random()), transparent: true, opacity: .6})
-            const mesh = new THREE.Mesh(geometry, metarial)
-            this.scene.add(mesh)
-        }
+        // for(let i = 0; i < 20; i ++) {
+        //     const geometry = new THREE.BufferGeometry()
+        //     let positionArray = new Float32Array(9)
+        //     for(let n = 0; n < 9; n ++) {
+        //         positionArray[n] = Math.random() * 10 - 5
+        //     }
+        //     geometry.setAttribute('position', new THREE.BufferAttribute(positionArray, 3))
+        //     const metarial = new THREE.MeshBasicMaterial({ color: new THREE.Color(Math.random(), Math.random(), Math.random()), transparent: true, opacity: .6})
+        //     const mesh = new THREE.Mesh(geometry, metarial)
+        //     this.scene.add(mesh)
+        // }
+        //贴图
+        // const textureLoader = new THREE.TextureLoader()
+        // const picTexture = textureLoader.load('./texture/door_left.png')
+        // const alphaTexture = textureLoader.load('./texture/glass.png')
+        // const geometry = new THREE.BoxBufferGeometry(2, 3.6, 2)
+        // const metarial = new THREE.MeshBasicMaterial({ 
+        //     color: '#ffffff', 
+        //     map: picTexture,
+        //     // alphaMap: alphaTexture,
+        //     transparent: true,
+        //     side: THREE.DoubleSide
+        //  })
+
+        //光照
+        // const geometry = new THREE.BoxBufferGeometry(1.5, 1, 1)
+        // const metarial = new THREE.MeshStandardMaterial({
+        //     color: '#ffffff', 
+        //     map: picTexture,
+        //     // alphaMap: alphaTexture,
+        //     transparent: true,
+        //     side: THREE.DoubleSide,
+        // })
+
+        //环境贴图
+        const cubeLoader = new THREE.CubeTextureLoader()
+        const env = cubeLoader.load([
+            'texture/brage/posx.jpg',
+            'texture/brage/negx.jpg',
+            'texture/brage/posy.jpg',
+            'texture/brage/negy.jpg',
+            'texture/brage/posz.jpg',
+            'texture/brage/negz.jpg'
+        ])
+        console.log(env);
+
+        const geometry = new THREE.SphereBufferGeometry(1, 20, 20)
+        const metarial = new THREE.MeshStandardMaterial({
+            metalness: 1,
+            roughness: 0,
+            envMap: env
+        })
+
+        const mesh = new THREE.Mesh(geometry, metarial)
+        
+        this.scene.add(mesh)
+        this.scene.background = env
+        this.scene.environment = env
+    }
+    
+    initLight() {
+        //环境光
+        this.scene.add(new THREE.AmbientLight(0xffffff, .5))
+        //平行光
+        const dirLight = new THREE.DirectionalLight(0xffffff, .5)
+        dirLight.position.set(10, 10, 10)
+        this.scene.add(dirLight)
     }
 
     initControls() {
         this.controls = new OrbitControls(this.camera, this.renderer.domElement)
         this.controls.enableDamping = true
+        this.controls.maxDistance = 50
+        this.controls.minDistance = 4
+        // this.controls.maxPolarAngle = Math.PI / 1.9
+        // this.controls.minPolarAngle = Math.PI / 2
     }
 
     initStats() {
@@ -79,6 +141,7 @@ class ThreeModel {
 
     animate() {
         requestAnimationFrame(this.animate.bind(this))
+        // this.scene.rotation.y += 0.01
         this.controls.update()
         this.stats.update()
         this.renderer.render(this.scene, this.camera)

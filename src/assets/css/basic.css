@@ -1,0 +1,8 @@
+* {
+    padding: 0;
+    margin: 0;
+}
+body {
+    background: url(../../imgs/three_bg.png) center;
+    background-size: cover;
+}
